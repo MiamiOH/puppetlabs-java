@@ -91,7 +91,7 @@ define java::oracle (
   $version_major = undef,
   $version_minor = undef,
   $java_se       = 'jdk',
-  $oracle_url    = 'http://download.oracle.com/otn-pub/java/jdk/',
+  $oracle_url    = 'http://download.oracle.com/otn-pub/java/jdk',
   $proxy_server  = undef,
   $proxy_type    = undef,
 ) {
@@ -217,9 +217,18 @@ define java::oracle (
 
   case $ensure {
     'present' : {
+
+      if $release_major == '8u121' {
+        $source = "${oracle_url}/${release_major}-${release_minor}/e9e7ea248e2c4826b92b3f075a80e441/${package_name}"
+      }
+
+      else {
+        $source = "${oracle_url}/${release_major}-${release_minor}/${package_name}"
+      }
+
       archive { $destination :
         ensure       => present,
-        source       => "${oracle_url}${release_major}-${release_minor}/${package_name}",
+        source       => $source,
         cookie       => 'gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie',
         extract_path => '/tmp',
         cleanup      => false,
